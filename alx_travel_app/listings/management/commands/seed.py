@@ -1,25 +1,17 @@
 from django.core.management.base import BaseCommand
 from listings.models import Listing
-import random
 
 class Command(BaseCommand):
-    help = 'Seed the database with sample listings'
+    help = 'Seed database with sample listings'
 
     def handle(self, *args, **kwargs):
-        if Listing.objects.exists():
-            self.stdout.write(self.style.WARNING('Listings already seeded. Skipping.'))
-            return
+        listings = [
+            {"title": "Cozy Cottage", "description": "A cozy place to stay.", "location": "Nairobi", "price_per_night": 50.00},
+            {"title": "Beachfront Villa", "description": "A luxurious villa near the ocean.", "location": "Mombasa", "price_per_night": 120.00}
+        ]
 
-        sample_titles = ['Cozy Cabin', 'Beachfront Bungalow', 'Mountain Retreat']
-        sample_locations = ['Nairobi', 'Mombasa', 'Naivasha']
+        for item in listings:
+            Listing.objects.create(**item)
 
-        for i in range(5):
-            Listing.objects.create(
-                title=random.choice(sample_titles),
-                location=random.choice(sample_locations),
-                price=random.randint(50, 500),
-                description=f'Sample listing {i+1}'
-            )
-
-        self.stdout.write(self.style.SUCCESS('Successfully seeded listings data.'))
+        self.stdout.write(self.style.SUCCESS("Database seeded successfully"))
 
